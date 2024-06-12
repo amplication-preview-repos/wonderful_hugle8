@@ -1,0 +1,76 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Payment {
+  amount        Float?
+  booking       Booking?                  @relation(fields: [bookingId], references: [id])
+  bookingId     String?
+  createdAt     DateTime                  @default(now())
+  currency      String?
+  id            String                    @id @default(cuid())
+  paymentStatus EnumPaymentPaymentStatus?
+  updatedAt     DateTime                  @updatedAt
+}
+
+model Meeting {
+  createdAt   DateTime  @default(now())
+  description String?
+  endTime     DateTime?
+  id          String    @id @default(cuid())
+  organizer   String?
+  startTime   DateTime?
+  title       String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model Booking {
+  createdAt DateTime           @default(now())
+  id        String             @id @default(cuid())
+  meetingId String?
+  payments  Payment[]
+  status    EnumBookingStatus?
+  updatedAt DateTime           @updatedAt
+  userId    String?
+}
+
+model Availability {
+  createdAt DateTime             @default(now())
+  day       EnumAvailabilityDay?
+  endTime   DateTime?
+  id        String               @id @default(cuid())
+  startTime DateTime?
+  updatedAt DateTime             @updatedAt
+  userId    String?
+}
+
+model User {
+  avatar    String?
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  googleId  String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumPaymentPaymentStatus {
+  Option1
+}
+
+enum EnumBookingStatus {
+  Option1
+}
+
+enum EnumAvailabilityDay {
+  Option1
+}
